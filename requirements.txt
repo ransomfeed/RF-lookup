@@ -1,0 +1,8 @@
+dnspython
+requests
+python-dotenv
+selenium
+webdriver-manager
+rich
+PySocks
+beautifulsoup4
