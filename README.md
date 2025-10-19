@@ -68,6 +68,11 @@ python test_rf_lookup.py
 python test_cti_extraction.py
 ```
 
+### Onion Seizure Detection Test
+```bash
+python test_onion_seizure.py
+```
+
 ## Configuration
 
 ### Automatic CTI Domain Extraction
@@ -87,7 +92,7 @@ If you want to add custom domains, modify the `extract_online_domains_from_cti()
 RF-lookup/
 ├── rf_lookup.py              # Main script
 ├── test_rf_lookup.py         # Test script
-├── test_cti_extraction.py    # CTI domain extraction test
+├── test_onion_seizure.py    # Onion seizure detection test
 ├── requirements.txt          # Python dependencies
 ├── README.md                 # Documentation
 ├── LICENSE                   # MIT License
