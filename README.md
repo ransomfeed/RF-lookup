@@ -25,7 +25,7 @@ RF-Lookup is an advanced tool for monitoring domains and onion sites, designed t
 
 1. Clone the RF-Lookup repository:
 ```bash
-git clone https://github.com/yourusername/RF-lookup.git
+git clone https://github.com/ransomfeed/RF-lookup.git
 cd RF-lookup
 ```
 
