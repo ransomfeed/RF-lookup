@@ -2,158 +2,158 @@
 
 **Ransomfeed Advanced Domain Monitoring Tool**
 
-RF-Lookup è uno strumento avanzato per il monitoraggio di domini e siti onion, progettato per rilevare cambiamenti DNS e possibili sequestri da parte delle forze dell'ordine prima che diventino pubblici.
+RF-Lookup is an advanced tool for monitoring domains and onion sites, designed to detect DNS changes and possible seizures by law enforcement before they become public.
 
-## Prerequisiti
+## Prerequisites
 
-- Python 3.7 o superiore
-- Firefox (per gli screenshot automatici)
-- Tor (opzionale, per il monitoraggio dei siti onion)
-- Git (per clonare i repository)
+- Python 3.7 or higher
+- Firefox (for automatic screenshots)
+- Tor (optional, for onion site monitoring)
+- Git (for cloning repositories)
 
-## Caratteristiche Principali
+## Key Features
 
-- 🔍 **Monitoraggio DNS**: Controlla cambiamenti nei record DNS (A, AAAA, CNAME, MX, NS, SOA, TXT)
-- 🌐 **Supporto Onion**: Monitora siti .onion attraverso la rete Tor
-- 📸 **Screenshot Automatici**: Cattura automaticamente screenshot di pagine sospette
-- 📊 **Report HTML**: Genera report dettagliati in formato HTML
-- 💾 **Logging Locale**: Salva tutti gli alert in file JSON locali
-- 🔄 **Auto-Update**: Sistema di aggiornamento automatico da GitHub
-- 📋 **CTI Integration**: Estrazione automatica di domini dai file di intelligence [deepdarkCTI](https://github.com/fastfire/deepdarkCTI) - questo progetto è una dipendenza dalla quale reperire i nomi dei domini da monitorare.
+- 🔍 **DNS Monitoring**: Checks changes in DNS records (A, AAAA, CNAME, MX, NS, SOA, TXT)
+- 🌐 **Onion Support**: Monitors .onion sites through the Tor network
+- 📸 **Automatic Screenshots**: Automatically captures screenshots of suspicious pages
+- 📊 **HTML Reports**: Generates detailed reports in HTML format
+- 💾 **Local Logging**: Saves all alerts in local JSON files
+- 🔄 **Auto-Update**: Automatic update system from GitHub
+- 📋 **CTI Integration**: Automatic extraction of domains from intelligence files [deepdarkCTI](https://github.com/fastfire/deepdarkCTI) - this project is a dependency from which to retrieve domain names to monitor.
 
-## Installazione
+## Installation
 
-1. Clona il repository RF-Lookup:
+1. Clone the RF-Lookup repository:
 ```bash
 git clone https://github.com/yourusername/RF-lookup.git
 cd RF-lookup
 ```
 
-2. Clona il repository CTI (dipendenza esterna):
+2. Clone the CTI repository (external dependency):
 ```bash
 git clone https://github.com/fastfire/deepdarkCTI.git
 ```
 
-3. Installa le dipendenze Python:
+3. Install Python dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-**Nota**: Il repository `deepdarkCTI` è una dipendenza esterna necessaria per il funzionamento di RF-Lookup. Contiene i file di intelligence con i domini da monitorare.
+**Note**: The `deepdarkCTI` repository is an external dependency necessary for RF-Lookup to function. It contains intelligence files with domains to monitor.
 
-4. Configura Tor (opzionale, per il monitoraggio dei siti onion):
+4. Configure Tor (optional, for onion site monitoring):
 ```bash
-# Su macOS con Homebrew
+# On macOS with Homebrew
 brew install tor
 
-# Avvia Tor
+# Start Tor
 tor
 ```
 
-## Utilizzo
+## Usage
 
-### Avvio Base
+### Basic Start
 ```bash
 python rf_lookup.py
 ```
 
-### Test del Sistema
+### System Test
 ```bash
 python test_rf_lookup.py
 ```
 
-### Test Estrazione Domini CTI
+### CTI Domain Extraction Test
 ```bash
 python test_cti_extraction.py
 ```
 
-## Configurazione
+## Configuration
 
-### Estrazione Automatica Domini CTI
-RF-Lookup estrae automaticamente i domini marcati come "ONLINE" dai file nella cartella `deepdarkCTI/`:
-- `markets.md` - Mercati dark web
-- `forum.md` - Forum e comunità
-- `ransomware_gang.md` - Gruppi ransomware
+### Automatic CTI Domain Extraction
+RF-Lookup automatically extracts domains marked as "ONLINE" from files in the `deepdarkCTI/` folder:
+- `markets.md` - Dark web markets
+- `forum.md` - Forums and communities
+- `ransomware_gang.md` - Ransomware groups
 
-Il sistema analizza automaticamente questi file all'avvio e monitora tutti i domini trovati.
+The system automatically analyzes these files at startup and monitors all found domains.
 
-### Domini Personalizzati
-Se vuoi aggiungere domini personalizzati, modifica la funzione `extract_online_domains_from_cti()` nel file `rf_lookup.py`:
+### Custom Domains
+If you want to add custom domains, modify the `extract_online_domains_from_cti()` function in the `rf_lookup.py` file:
 
-## Struttura dei File
+## File Structure
 
 ```
 RF-lookup/
-├── rf_lookup.py              # Script principale
-├── test_rf_lookup.py         # Script di test
-├── test_cti_extraction.py    # Test estrazione domini CTI
-├── requirements.txt          # Dipendenze Python
-├── README.md                 # Documentazione
-├── LICENSE                   # Licenza MIT
-├── .gitignore               # File Git ignore
-├── deepdarkCTI/             # Repository CTI esterno (clonato separatamente)
+├── rf_lookup.py              # Main script
+├── test_rf_lookup.py         # Test script
+├── test_cti_extraction.py    # CTI domain extraction test
+├── requirements.txt          # Python dependencies
+├── README.md                 # Documentation
+├── LICENSE                   # MIT License
+├── .gitignore               # Git ignore file
+├── deepdarkCTI/             # External CTI repository (cloned separately)
 │   ├── markets.md
 │   ├── forum.md
 │   └── ransomware_gang.md
-└── [File generati automaticamente]
-    ├── rf_lookup_logs/      # Cartella dei log (creata automaticamente)
-    ├── rf_lookup_results.json # Risultati DNS precedenti
-    ├── onion_lookup_results.json # Risultati onion precedenti
-    └── screenshots/         # Screenshot delle pagine sospette
+└── [Automatically generated files]
+    ├── rf_lookup_logs/      # Log folder (created automatically)
+    ├── rf_lookup_results.json # Previous DNS results
+    ├── onion_lookup_results.json # Previous onion results
+    └── screenshots/         # Screenshots of suspicious pages
 ```
 
-## Funzionalità di Monitoraggio
+## Monitoring Features
 
 ### DNS Monitoring
-- Rileva cambiamenti nei record DNS
-- Identifica possibili sequestri tramite NS records sospetti
-- Salva cronologia delle modifiche
+- Detects changes in DNS records
+- Identifies possible seizures through suspicious NS records
+- Saves change history
 
 ### Onion Monitoring
-- Controlla lo stato dei siti .onion
-- Rileva pagine di sequestro
-- Utilizza proxy Tor automaticamente
+- Checks .onion site status
+- Detects seizure pages
+- Uses Tor proxy automatically
 
 ### Alert System
-- Logging locale in formato JSON
-- Report HTML interattivi
-- Screenshot automatici delle pagine sospette
+- Local logging in JSON format
+- Interactive HTML reports
+- Automatic screenshots of suspicious pages
 
-## Requisiti di Sistema
+## System Requirements
 
-- **Python**: 3.7 o superiore
-- **Firefox**: Per gli screenshot automatici delle pagine sospette
-- **Tor**: Opzionale, per il monitoraggio dei siti onion (porta 9050)
-- **Git**: Per clonare i repository necessari
-- **Sistema Operativo**: Windows, macOS, Linux
+- **Python**: 3.7 or higher
+- **Firefox**: For automatic screenshots of suspicious pages
+- **Tor**: Optional, for onion site monitoring (port 9050)
+- **Git**: For cloning necessary repositories
+- **Operating System**: Windows, macOS, Linux
 
-## Dipendenze
+## Dependencies
 
-- `dnspython` - Risoluzione DNS
-- `requests` - Richieste HTTP
-- `selenium` - Automazione browser
-- `beautifulsoup4` - Parsing HTML
-- `rich` - Output colorato
-- `PySocks` - Supporto proxy SOCKS
+- `dnspython` - DNS resolution
+- `requests` - HTTP requests
+- `selenium` - Browser automation
+- `beautifulsoup4` - HTML parsing
+- `rich` - Colored output
+- `PySocks` - SOCKS proxy support
 
-## Licenza
+## License
 
-Questo progetto è rilasciato sotto licenza MIT. Vedi il file [LICENSE](LICENSE) per i dettagli.
+This project is released under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Contributi
+## Contributing
 
-I contributi sono benvenuti! Per favore:
+Contributions are welcome! Please:
 
-1. Fai un fork del repository
-2. Crea un branch per la tua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit le tue modifiche (`git commit -m 'Add some AmazingFeature'`)
-4. Push al branch (`git push origin feature/AmazingFeature`)
-5. Apri una Pull Request
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Dipendenze Esterne
+## External Dependencies
 
-- **[deepdarkCTI](https://github.com/fastfire/deepdarkCTI)**: Repository di intelligence che contiene i domini da monitorare. Deve essere clonato separatamente nella cartella del progetto.
+- **[deepdarkCTI](https://github.com/fastfire/deepdarkCTI)**: Intelligence repository containing domains to monitor. Must be cloned separately in the project folder.
 
 ## Disclaimer
 
-Questo strumento è destinato esclusivamente a scopi educativi e di ricerca. Gli utenti sono responsabili del rispetto delle leggi locali e delle normative applicabili.
+This tool is intended exclusively for educational and research purposes. Users are responsible for complying with local laws and applicable regulations.
