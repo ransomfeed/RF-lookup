@@ -3,6 +3,7 @@
 **Ransomfeed Advanced Domain Monitoring Tool**
 
 RF-Lookup is an advanced tool for monitoring domains and onion sites, designed to detect DNS changes and possible seizures by law enforcement before they become public.
+Originally based on [FBI_Watchdog](https://github.com/DarkWebInformer/FBI_Watchdog).
 
 ## Prerequisites
 

@@ -178,7 +178,7 @@ ascii_banner = r"""
     🔍  │  Monitoring DNS changes & onion sites   │  🔍
     🔍  ╰─────────────────────────────────────────╯  🔍
                                                                         
-[bold blue]RF-Lookup v2.1.0 by [link=https://darkwebinformer.com]Dark Web Informer[/link][/bold blue]
+[bold blue]RF-Lookup v1.0.0 by [link=https://ransomfeed.it]Ransomfeed Team[/link][/bold blue]
 """
 
 console.print(Padding(f"[bold blue]{ascii_banner}[/bold blue]", (0, 0, 0, 4)))
