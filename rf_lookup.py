@@ -626,15 +626,61 @@ def check_onion_status(onion_url):
     last_status = onion_results.get(onion_url, {}).get("status", "unknown")
 
     try:
-        response = requests.get(f"http://{onion_url}", proxies=proxies, timeout=30)  # Increased timeout
+        response = requests.get(f"http://{onion_url}", proxies=proxies, timeout=30)
         html_content = response.text.lower()
-
+        
+        # Debug: Show page title and first 200 chars
+        soup = BeautifulSoup(response.text, "html.parser")
+        page_title = soup.find("title")
+        title_text = page_title.get_text().strip() if page_title else "No title"
+        
+        console.print(Padding(f"[cyan]→ Checking {onion_url} - Title: '{title_text}'[/cyan]", (0, 0, 0, 4)))
+        
+        # More specific seizure keywords
         seizure_keywords = [
-            "this hidden site has been seized", "fbi", "seized by", "department of justice",
-            "europol", "nca", "interpol", "law enforcement", "this domain has been seized"
+            "this hidden site has been seized",
+            "this domain has been seized", 
+            "this site has been seized",
+            "this website has been seized",
+            "seized by law enforcement",
+            "seized by the fbi",
+            "seized by europol",
+            "seized by interpol",
+            "seized by nca",
+            "operation onymous",
+            "operation bayonet",
+            "law enforcement seizure",
+            "federal bureau of investigation",
+            "department of justice seizure",
+            "site seized",
+            "domain seized",
+            "website seized",
+            "seized pursuant to",
+            "seized under warrant",
+            "seized by",
+            "has been seized",
+            "was seized",
+            "seized site",
+            "seized domain",
+            "seized website"
         ]
-
-        is_seized = any(keyword in html_content for keyword in seizure_keywords)
+        
+        # Check for seizure indicators
+        found_keywords = [keyword for keyword in seizure_keywords if keyword in html_content]
+        
+        # Additional checks for common seizure page patterns
+        seizure_indicators = [
+            "seized" in html_content and ("fbi" in html_content or "law enforcement" in html_content),
+            "operation" in html_content and ("seized" in html_content or "takedown" in html_content),
+            "warrant" in html_content and "seized" in html_content,
+            "court order" in html_content and "seized" in html_content
+        ]
+        
+        is_seized = len(found_keywords) > 0 or any(seizure_indicators)
+        
+        if found_keywords:
+            console.print(Padding(f"[yellow]→ Found seizure keywords: {found_keywords}[/yellow]", (0, 0, 0, 4)))
+        
         new_status = "seized" if is_seized else "active"
 
         if last_status == new_status:
@@ -642,16 +688,17 @@ def check_onion_status(onion_url):
             return False
 
         if is_seized:
-            console.print(Padding(f"[bold red]→ Seizure detected: {onion_url}[/bold red]", (0, 0, 0, 4)))
+            console.print(Padding(f"[bold red]→ SEIZURE DETECTED: {onion_url}[/bold red]", (0, 0, 0, 4)))
+            console.print(Padding(f"[red]→ Keywords found: {found_keywords}[/red]", (0, 0, 0, 4)))
             seizure_capture = capture_seizure_image(onion_url, use_tor=True)
 
-            onion_results[onion_url] = {"status": "seized", "last_checked": datetime.now(timezone.utc).isoformat()}
+            onion_results[onion_url] = {"status": "seized", "last_checked": datetime.now(timezone.utc).isoformat(), "keywords": found_keywords}
             save_onion_results()
 
             local_notify_seizure(onion_url, "Onion Seized", seizure_capture)
 
         else:
-            console.print(Padding(f"[green]→ {onion_url} is active[/green]", (0, 0, 0, 4)))
+            console.print(Padding(f"[green]→ {onion_url} is active (no seizure indicators found)[/green]", (0, 0, 0, 4)))
             onion_results[onion_url] = {"status": "active", "last_checked": datetime.now(timezone.utc).isoformat()}
             save_onion_results()
 
