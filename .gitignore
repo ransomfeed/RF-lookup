@@ -134,6 +134,9 @@ rf_lookup_logs/
 *.json
 *.html
 
+# Whitelist configuration (optional - users can create their own)
+# whitelist.json
+
 # Screenshots directory
 screenshots/
 images/
