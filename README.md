@@ -91,6 +91,14 @@ The system automatically analyzes these files at startup and monitors all found 
 ### Whitelist Configuration
 RF-Lookup supports domain whitelisting to exclude specific domains from monitoring. Create a `whitelist.json` file:
 
+**Quick Start:**
+```bash
+cp whitelist.example.json whitelist.json
+# Edit whitelist.json with your domains
+```
+
+**Manual Configuration:**
+
 ```json
 {
   "whitelist": {
@@ -125,7 +133,7 @@ If you want to add custom domains, modify the `extract_online_domains_from_cti()
 RF-lookup/
 ├── rf_lookup.py              # Main script
 ├── test_rf_lookup.py         # Test script
-├── test_whitelist.py         # Whitelist functionality test
+├── whitelist.example.json    # Example whitelist configuration
 ├── requirements.txt          # Python dependencies
 ├── README.md                 # Documentation
 ├── LICENSE                   # MIT License
