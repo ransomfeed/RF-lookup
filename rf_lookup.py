@@ -22,6 +22,88 @@ from webdriver_manager.firefox import GeckoDriverManager
 from rich.console import Console
 from rich.padding import Padding
 
+def load_whitelist():
+    """Load whitelist configuration from JSON file."""
+    whitelist_file = "whitelist.json"
+    whitelist_config = {
+        "whitelist": {
+            "clearnet_domains": [],
+            "onion_domains": [],
+            "enabled": False
+        },
+        "settings": {
+            "skip_whitelisted": True,
+            "log_skipped_domains": True
+        }
+    }
+    
+    try:
+        if os.path.exists(whitelist_file):
+            with open(whitelist_file, 'r', encoding='utf-8') as f:
+                whitelist_config = json.load(f)
+            console.print(Padding(f"[bold green]→ Whitelist loaded: {len(whitelist_config['whitelist']['clearnet_domains'])} clearnet, {len(whitelist_config['whitelist']['onion_domains'])} onion domains[/bold green]", (0, 0, 0, 4)))
+        else:
+            console.print(Padding(f"[yellow]→ No whitelist.json found, creating default file[/yellow]", (0, 0, 0, 4)))
+            # Create default whitelist file
+            with open(whitelist_file, 'w', encoding='utf-8') as f:
+                json.dump(whitelist_config, f, indent=2, ensure_ascii=False)
+            console.print(Padding(f"[green]→ Default whitelist.json created[/green]", (0, 0, 0, 4)))
+    except Exception as e:
+        console.print(Padding(f"[red]→ Error loading whitelist: {e}[/red]", (0, 0, 0, 4)))
+        whitelist_config = {
+            "whitelist": {"clearnet_domains": [], "onion_domains": [], "enabled": False},
+            "settings": {"skip_whitelisted": True, "log_skipped_domains": True}
+        }
+    
+    return whitelist_config
+
+def is_domain_whitelisted(domain, whitelist_config):
+    """Check if a domain is in the whitelist."""
+    if not whitelist_config["whitelist"]["enabled"]:
+        return False
+    
+    if not whitelist_config["settings"]["skip_whitelisted"]:
+        return False
+    
+    # Check clearnet domains
+    if domain in whitelist_config["whitelist"]["clearnet_domains"]:
+        return True
+    
+    # Check onion domains
+    if domain in whitelist_config["whitelist"]["onion_domains"]:
+        return True
+    
+    return False
+
+def filter_whitelisted_domains(domains, onion_sites, whitelist_config):
+    """Filter out whitelisted domains from the monitoring lists."""
+    if not whitelist_config["whitelist"]["enabled"]:
+        return domains, onion_sites
+    
+    original_clearnet_count = len(domains)
+    original_onion_count = len(onion_sites)
+    
+    # Filter clearnet domains
+    filtered_domains = [domain for domain in domains if not is_domain_whitelisted(domain, whitelist_config)]
+    
+    # Filter onion domains
+    filtered_onion_sites = [onion for onion in onion_sites if not is_domain_whitelisted(onion, whitelist_config)]
+    
+    # Log skipped domains if enabled
+    if whitelist_config["settings"]["log_skipped_domains"]:
+        skipped_clearnet = [domain for domain in domains if is_domain_whitelisted(domain, whitelist_config)]
+        skipped_onion = [onion for onion in onion_sites if is_domain_whitelisted(onion, whitelist_config)]
+        
+        if skipped_clearnet:
+            console.print(Padding(f"[yellow]→ Skipped {len(skipped_clearnet)} whitelisted clearnet domains: {skipped_clearnet[:5]}{'...' if len(skipped_clearnet) > 5 else ''}[/yellow]", (0, 0, 0, 4)))
+        
+        if skipped_onion:
+            console.print(Padding(f"[yellow]→ Skipped {len(skipped_onion)} whitelisted onion domains: {skipped_onion[:5]}{'...' if len(skipped_onion) > 5 else ''}[/yellow]", (0, 0, 0, 4)))
+    
+    console.print(Padding(f"[bold cyan]→ After whitelist filtering: {len(filtered_domains)} clearnet domains, {len(filtered_onion_sites)} onion sites[/bold cyan]", (0, 0, 0, 4)))
+    
+    return filtered_domains, filtered_onion_sites
+
 console = Console()
 
 def extract_online_domains_from_cti():
@@ -187,10 +269,13 @@ console.print(Padding(f"[bold blue]{ascii_banner}[/bold blue]", (0, 0, 0, 4)))
 console.print(Padding("[bold cyan]→ Extracting domains from deepdarkCTI files...[/bold cyan]", (0, 0, 0, 4)))
 cti_domains, cti_onion_sites = extract_online_domains_from_cti()
 
-# Domain list to monitor for seizure banners and DNS changes
-domains = cti_domains
+# Load whitelist configuration
+console.print(Padding("[bold cyan]→ Loading whitelist configuration...[/bold cyan]", (0, 0, 0, 4)))
+whitelist_config = load_whitelist()
 
-onion_sites = cti_onion_sites
+# Apply whitelist filtering
+console.print(Padding("[bold cyan]→ Applying whitelist filtering...[/bold cyan]", (0, 0, 0, 4)))
+domains, onion_sites = filter_whitelisted_domains(cti_domains, cti_onion_sites, whitelist_config)
 
 # DNS records that will be checked for changes
 dnsRecords = ["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]

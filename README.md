@@ -73,6 +73,11 @@ python test_cti_extraction.py
 python test_onion_seizure.py
 ```
 
+### Whitelist Functionality Test
+```bash
+python test_whitelist.py
+```
+
 ## Configuration
 
 ### Automatic CTI Domain Extraction
@@ -83,6 +88,34 @@ RF-Lookup automatically extracts domains marked as "ONLINE" from files in the `d
 
 The system automatically analyzes these files at startup and monitors all found domains.
 
+### Whitelist Configuration
+RF-Lookup supports domain whitelisting to exclude specific domains from monitoring. Create a `whitelist.json` file:
+
+```json
+{
+  "whitelist": {
+    "description": "Domains to exclude from RF-Lookup monitoring",
+    "clearnet_domains": [
+      "example.com",
+      "test-domain.org"
+    ],
+    "onion_domains": [
+      "example.onion"
+    ],
+    "enabled": true
+  },
+  "settings": {
+    "skip_whitelisted": true,
+    "log_skipped_domains": true
+  }
+}
+```
+
+**Configuration Options:**
+- `enabled`: Enable/disable whitelist functionality
+- `skip_whitelisted`: Skip monitoring whitelisted domains
+- `log_skipped_domains`: Log which domains are being skipped
+
 ### Custom Domains
 If you want to add custom domains, modify the `extract_online_domains_from_cti()` function in the `rf_lookup.py` file:
 
@@ -92,7 +125,7 @@ If you want to add custom domains, modify the `extract_online_domains_from_cti()
 RF-lookup/
 ├── rf_lookup.py              # Main script
 ├── test_rf_lookup.py         # Test script
-├── test_onion_seizure.py    # Onion seizure detection test
+├── test_whitelist.py         # Whitelist functionality test
 ├── requirements.txt          # Python dependencies
 ├── README.md                 # Documentation
 ├── LICENSE                   # MIT License
