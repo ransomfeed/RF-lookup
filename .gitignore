@@ -132,6 +132,7 @@ dmypy.json
 # Generated logs and reports
 rf_lookup_logs/
 *.json
+!whitelist.example.json
 *.html
 
 # Whitelist configuration (optional - users can create their own)

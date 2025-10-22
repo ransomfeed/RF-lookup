@@ -1,0 +1,19 @@
+{
+  "whitelist": {
+    "description": "Example whitelist configuration for RF-Lookup",
+    "clearnet_domains": [
+      "example.com",
+      "test-domain.org",
+      "legitimate-site.com"
+    ],
+    "onion_domains": [
+      "example.onion",
+      "legitimate-site.onion"
+    ],
+    "enabled": false
+  },
+  "settings": {
+    "skip_whitelisted": true,
+    "log_skipped_domains": true
+  }
+}
